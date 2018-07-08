@@ -1,0 +1,30 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Title</title>#}
+{#</head>#}
+{#<body>#}
+{#<h1>Hello World</h1>#}
+{##}
+{#</body>#}
+{#</html>#}
+
+{% extends "base.html" %}  {# extnds指令声明这个模板衍生子base.html #}
+{% block title %}Index{% endblock %}
+{% block head %}
+    {{ super() }}  {# 注意这里：基模板中其内容不是空的，所以使用super()获取原来的内内容 #}
+    <style>
+    </style>
+{% endblock %}
+{% block body %}
+    <h1>Hello, this is extends base.html</h1>
+
+    {# todo 有点小bug，这里的时间格式渲染不出来 #}
+
+<p>The local date and time is {{ moment(current_time).format("LLL") }} .</p>
+<p>That was {{ moment(current_time).fromNow(refresh=True) }}.</p>
+
+{{ current_time }}
+
+{% endblock %}

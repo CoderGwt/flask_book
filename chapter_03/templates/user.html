@@ -1,0 +1,74 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Title</title>#}
+{#</head>#}
+{#<body>#}
+{# 使用过滤器修改变量，以首字母大写的形式显示变量name。还可以指定其他的形式 #}
+{#name: {{ name }} <hr>#}
+{#渲染时不转义：Hello, {{ name | safe }}<hr>  {# 不转义 #}
+{#把值的首字母转换成大写，其余字母转换成小写：Hello, {{ name | capitalize }}<hr> {# 第一个单词大写 #}
+{#把值转换成大写形式：Hello, {{ name | upper }}<hr>  {# 大写 #}
+{#把值转换成小写形式：Hello, {{ name | lower }}<hr>  {# 小写 #}
+{#把值中每一个单词的首字母都转换成大写： Hello, {{ name | title }}<hr>  {# 单词首字母大写 #}
+{#把值的首尾空格去掉：Hello, {{ name | trim }}<hr>  {# 把首尾空格去掉 #}
+{#渲染之前把值中所有的HTML标签都删掉：Hello, {{ name | striptags }}<hr> {# 渲染之前把值中所有的HTML标签都删掉 #}
+{##}
+{#{% if name %}#}
+{#    <h1>Hello, {{ name }}</h1>#}
+{##}
+{#    {% for i in li%}#}
+{#        <li>{{ i }}</li>  {# 循环，输出 #}
+{#    {% endfor %}#}
+{##}
+{#{% else %}#}
+{#    <h1>Hello, stranger</h1>#}
+{#{% endif %}#}
+{##}
+{#</body>#}
+{#</html>#}
+
+{# 从Flask-Bootstrap中导入bootstrap/base.html，从而实现模板的继承 #}
+
+
+{#{% extends "bootstrap/base.html" %}#}
+{##}
+{#{% block title %} Flasky {% endblock %}#}
+{#{% block navbar %}#}
+{#    <div class="navbar navbar-inverse" role="navigation">#}
+{#     <div class="container">#}
+{#        <div class="navbar-header">#}
+{#            <button type="button" class="navbar-toggle"#}
+{#                    data-toggle="collapse" data-target=".navbar-collapse">#}
+{#                <span class="sr-only">Toggle navigation</span>#}
+{#                <span class="icon-bar"></span>#}
+{#                <span class="icon-bar"></span>#}
+{#                <span class="icon-bar"></span>#}
+{#            </button>#}
+{#            <a href="/" class="navbar-brand">Flask</a>#}
+{#        </div>#}
+{#        <div class="navbar-collapse collapse">#}
+{#            <ul class="nav navbar-nav">#}
+{#                <li><a href="/">Home</a></li>#}
+{#            </ul>#}
+{#        </div>#}
+{#     </div>#}
+{#    </div>#}
+{#{% endblock %}#}
+
+{#{% block content %}#}
+{#    <div class="container">#}
+{#        <div class="page-header">#}
+{#            <h1>Hello, {{ name }} ! </h1>#}
+{#        </div>#}
+{#    </div>#}
+{#{% endblock %}#}
+
+{%  extends 'base.html'%}
+{#{% block title %}User{% endblock %}#}
+{% block page_content %}
+    <div class="page-header">
+        <h1>Hello, {{ name }}</h1>
+    </div>
+{% endblock %}

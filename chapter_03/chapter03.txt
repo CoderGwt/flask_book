@@ -1,0 +1,9 @@
+第二章：模板
+    如何使用模板render_template
+    如何渲染模板
+    在模板中使用视图函数传过去的变量，如何对变量进行转换 ( | safe,upper,lower....)
+    模板中使用控制结构，循环结构等东西
+    使用Flask-Bootstrap扩展集成Twitter Bootstrap
+
+    时间显示
+    时间戳
