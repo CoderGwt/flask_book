@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block page_content %}
+
+    {# todo 在子模版中使用flash()消息  #}
+{#    {% for message in get_flashed_messages() %}#}
+{#        <div class="alert alert-warning">#}
+{#            <button type="button" class="close" data-dismiss="alert">&times;</button>#}
+{#            {{ message }}#}
+{#        </div>#}
+{#    {% endfor %}#}
+
+    <div class="page-header">
+        <h1>Hello, {% if name %} {{ name }} {% else %}Stranger{% endif %}</h1>
+    </div>
+
+
+{#<form method="post">#}
+{#    {{ form.hidden_tag() }}#}
+{#    {{ form.name.label }}  {{ form.name(id="my-text-field") }}#}
+{#    {{ form.submit() }}#}
+{#</form>#}
+
+    {# todo 把表单渲染成HTML #}
+    {{ wtf.quick_form(form) }}
+
+{% endblock %}
