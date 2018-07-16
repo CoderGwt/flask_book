@@ -34,7 +34,7 @@ class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # 整型，主键
     name = db.Column(db.String(64), unique=True)  # 字符串型，唯一
 
-    user = db.relationship("User", backref='role')
+    user = db.relationship("User", backref='role', lazy="dynamic")  # 加入lazy，禁止自动执行查询。
 
     def __repr__(self):
         return "<Role %r>" % self.name
@@ -59,13 +59,14 @@ class User(db.Model):
 
 # todo 数据库操作
 # 在python shell 中实际操作
-# todo 5.1 创建表
+
+# todo 5.8.1 创建表
 """
 创建数据库：
     db.create_all()  创建数据库，如果数据表已存在数据库中db.create_all()不会重新创建或者更新这个表
 """
 
-# todo 5.2 插入行
+# todo 5.8.2 插入行
 """
 插入行：
     admin_role = Role(name="Admin")
@@ -83,12 +84,32 @@ class User(db.Model):
 为了把对象写入数据库，最后还要通过db.session.commit()方法提交会话。
     db.session.commit()
   
-数据库会话db.session跟之前介绍的Flask session对象没有关系。数据库会话也叫 事务 
+数据库会话db.session跟之前介绍的Flask session对象没有关系。
+数据库会话也叫事务
 
+数据库会话也可 ”回滚“ 调用db.session.rollback()后，
+    添加到数据库会话中的所有对象都会还原到他们在数据库时的状态
+"""
 
+# todo 5.8.3 修改行
+"""
+    admin_role.name = "...."
+    db.session.add(admin_role)
+    db.session.commit()
+"""
+
+# todo 5.8.4 删除行
+"""
+    delete() ...有待补充
+"""
+
+# todo 5.8.5 查询行
+"""
+    query().....有待补充
 """
 
 
+# todo 5.9 在视图函数中操作数据库【important】
 @app.route('/')
 def hello_world():
     return 'Hello World!'
