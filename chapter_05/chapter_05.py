@@ -16,7 +16,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True  # 每次请求结束后都会自动提交数据库中的变动
+# app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True  # 每次请求结束后都会自动提交数据库中的变动
+
+# todo 替换上一句，Flask-SQLAlchemy 2.0版本之后被遗弃
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)  # 创建SQLAlchemy 类的实例 db对象，表示程序使用的数据库
@@ -28,7 +30,7 @@ db = SQLAlchemy(app)  # 创建SQLAlchemy 类的实例 db对象，表示程序使
 class Role(db.Model):
     # __tablename__ 指定了在数据库使用的表名。
     # 如果没有指定，Flask-SQLAlachemy会默认给定一个表名，但是表名没有遵循使用复数形式命名的约定，
-    __tablename = "roles"
+    __tablename__ = "roles"
     id = db.Column(db.Integer, primary_key=True)  # 整型，主键
     name = db.Column(db.String(64), unique=True)  # 字符串型，唯一
 
@@ -53,6 +55,38 @@ class User(db.Model):
 
     def __repr__(self):
         return "<User %r>" % self.username
+
+
+# todo 数据库操作
+# 在python shell 中实际操作
+# todo 5.1 创建表
+"""
+创建数据库：
+    db.create_all()  创建数据库，如果数据表已存在数据库中db.create_all()不会重新创建或者更新这个表
+"""
+
+# todo 5.2 插入行
+"""
+插入行：
+    admin_role = Role(name="Admin")
+    mod_role = Role(name="Moderator")
+    user_role = Role(name="User")
+    user_john = User(username="John", role=admin_role)
+    usr_susan = User(username="susan", role=user_role)
+    user_david = User(username="david", role=user_role)
+    
+    此时这些对象只存在与python中，还没有写入数据库，因此id尚未赋值
+    
+通过数据库会话管理对数据库所作的改动 由 db.session表示
+    db.session.add_all([admin_role, mod_role, user_role, usr_susan,user_david])
+
+为了把对象写入数据库，最后还要通过db.session.commit()方法提交会话。
+    db.session.commit()
+  
+数据库会话db.session跟之前介绍的Flask session对象没有关系。数据库会话也叫 事务 
+
+
+"""
 
 
 @app.route('/')
