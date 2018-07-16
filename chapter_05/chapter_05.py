@@ -32,6 +32,8 @@ class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # 整型，主键
     name = db.Column(db.String(64), unique=True)  # 字符串型，唯一
 
+    user = db.relationship("User", backref='role')
+
     def __repr__(self):
         return "<Role %r>" % self.name
 
@@ -45,6 +47,9 @@ class User(db.Model):
     __tablename__ = "users"  # 表名
     id = db.Column(db.Integer, primary_key=True)  # 整型，主键
     username = db.Column(db.String(64), unique=True, index=True)  # 为这列创建索引，提高查询效率
+
+    role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))  # todo 外键
+    # 传给db.ForeignKey(’roles.id') 表示这个是roles表中行id的值
 
     def __repr__(self):
         return "<User %r>" % self.username
