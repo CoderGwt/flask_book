@@ -3,8 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
+from flask_script import Shell, Manager
+from flask_moment import Moment
 from wtforms import StringField, SubmitField
 from wtforms.validators import required
+from flask_migrate import Migrate, MigrateCommand  # 配置Flask-Migrate
 
 """
     Flask-SQLAlchemy 是一个关系型数据库的框架
@@ -21,7 +24,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 
-bootstrap = Bootstrap(app)
 app.secret_key = "this is the secret key"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
@@ -31,6 +33,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'da
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)  # 创建SQLAlchemy 类的实例 db对象，表示程序使用的数据库
+
+bootstrap = Bootstrap(app)
+moment = Moment(app)
+manager = Manager(app)
+# todo 5.11.1 配置  Flask-Migrate
+migrate = Migrate(app, db)
+manager.add_command("db", MigrateCommand)
+# todo 5.11.1 创建迁移仓库 python chapter_05.py db init
+# todo 5.11.2 创建迁移脚脚本
+
 
 # todo 5.6 定义模型
 # 在ORM中，模型一般是一个python类，类中的属性对应数据库中的列
@@ -147,5 +159,17 @@ def index():
                            name=session.get("name"), known=session.get("known", False))
 
 
+# todo 5.10 集成Python shell
+# @app.shell_context_processor  git 上是这个，但是好像没有效果，所以还是使用一下的manager
+def make_shell_context():
+    return dict(app=app, db=db, User=User, Role=Role)
+
+
+manager.add_command("shell", Shell(make_context=make_shell_context))
+
+# todo 5.11 使用flask-Migrate实现数据库迁移
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True)
+    manager.run()
