@@ -1,6 +1,11 @@
-from flask import Flask
+from flask import Flask, render_template, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
+from flask_bootstrap import Bootstrap
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import required
+
 """
     Flask-SQLAlchemy 是一个关系型数据库的框架
         提供了高层的ORM，也提供了使用数据库原生SQL的底层功能
@@ -15,6 +20,10 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
+
+bootstrap = Bootstrap(app)
+app.secret_key = "this is the secret key"
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
 # app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True  # 每次请求结束后都会自动提交数据库中的变动
 
@@ -109,11 +118,34 @@ class User(db.Model):
 """
 
 
+class NameForm(FlaskForm):
+    """
+        表单类
+    """
+    name = StringField("What's your name?", validators=[required()])
+    submit = SubmitField("Submit")
+
+
 # todo 5.9 在视图函数中操作数据库【important】
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
+@app.route('/', methods=['POST', 'GET'])
+def index():
+    form = NameForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.name.data).first()  # 数据库中查找
+        if user is None:  # 如果找不到，就添加
+            user = User(username=form.name.data)
+            db.session.add(user)
+            db.session.commit()
+            session['known'] = False
+        else:
+            session['known'] = True
+        session['name'] = form.name.data
+        form.name.data = ""
+        return redirect(url_for("index"))
+
+    return render_template("index.html", form=form,
+                           name=session.get("name"), known=session.get("known", False))
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
