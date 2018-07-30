@@ -10,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_script import Shell
 from flask_migrate import MigrateCommand, Migrate  # todo 数据库迁移
 from flask_mail import Mail, Message
+from threading import Thread
 
 
 app = Flask(__name__)
@@ -72,12 +73,20 @@ class User(db.Model):
 # todo chapter 6 发送邮件
 
 
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+
+
 def send_mail(to, subject, template, **kwargs):
     msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + subject,
                   sender=app.config['FLASKY_MAIL_SENDER'],recipients=[to])
     msg.body = render_template(template + ".txt", **kwargs)
     # msg.html = render_template(template + ".html", **kwargs)
-    mail.send(msg)
+    # mail.send(msg)
+    thread = Thread(target=send_async_email, args=(app, msg))  # todo 放在线程里发送邮件
+    thread.start()
+    return thread
 
 
 # todo 代码中操作数据库
@@ -95,7 +104,7 @@ def index():
             flash("Please to meet you ! ")
             print(app.config['FLASKY_ADMIN'])
             if app.config['FLASKY_ADMIN']:
-                send_mail(app.config['FLASKY_ADMIN'], "New User", "mail/new_user", user=user)
+                send_mail(app.config['FLASKY_ADMIN'], "New User - " + user.username, "mail/new_user", user=user)
 
         else:  # 如果查找的到，就显示出来
             # session['known'] = True
