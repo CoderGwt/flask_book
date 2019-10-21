@@ -26,7 +26,7 @@ app.config['MAIL_USE_SSL'] = True
 # TODO 这是接收一方的信息还是发送一方的信息？刚才一直用作是发送一方的信息【弄成接收一方的试试看，发送失败】
 # todo 有一个疑问， 如果不是发给自己，而是发给别人，会当作是垃圾邮箱处理，这个是怎么回事？
 app.config['MAIL_USERNAME'] = "969793648@qq.com"
-app.config['MAIL_PASSWORD'] = "ujawcdqmvkiibcfd"  # 这个是授权码 和 SMTP的授权码有区别吗？
+app.config['MAIL_PASSWORD'] = "*****************"  # 这个是授权码 和 SMTP的授权码有区别吗？
 app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[Flasky]'
 app.config['FLASKY_MAIL_SENDER'] = "969793648@qq.com"
 
